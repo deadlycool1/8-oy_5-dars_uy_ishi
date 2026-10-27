@@ -1,34 +1,23 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import DjangoModelPermissions
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Janr, Book, Comment
 from .serializers import JanrSerializer, BookSerializer, CommentSerializer
 from .permissions import IsCommentOwner
 
 
-class JanrListCreateView(generics.ListCreateAPIView):
+class JanrViewSet(viewsets.ModelViewSet):
     queryset = Janr.objects.all()
     serializer_class = JanrSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class JanrDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Janr.objects.all()
-    serializer_class = JanrSerializer
-    lookup_field = "id"
-    lookup_url_kwarg = "pk"
-
-
-class BookListCreateView(generics.ListCreateAPIView):
+class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.select_related("genre").all()
     serializer_class = BookSerializer
-
-
-class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Book.objects.select_related("genre").all()
-    serializer_class = BookSerializer
-    lookup_field = "id"
-    lookup_url_kwarg = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
